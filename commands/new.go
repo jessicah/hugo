@@ -310,7 +310,7 @@ func newContentPathSection(path string) (string, string) {
 	var section string
 	// assume the first directory is the section (kind)
 	if strings.Contains(createpath[1:], helpers.FilePathSeparator) {
-		section = helpers.GuessSection(createpath)
+		section = helpers.GuessKind(createpath)
 	}
 
 	return createpath, section

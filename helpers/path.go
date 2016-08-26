@@ -331,30 +331,20 @@ func PaginateAliasPath(base string, page int) string {
 	return p
 }
 
-// GuessSection returns the section given a source path.
-// A section is the part between the root slash and the second slash
-// or before the first slash.
-func GuessSection(in string) string {
+func GuessKind(in string) string {
 	parts := strings.Split(in, FilePathSeparator)
-	// This will include an empty entry before and after paths with leading and trailing slashes
-	// eg... /sect/one/ -> ["", "sect", "one", ""]
-
-	// Needs to have at least a value and a slash
-	if len(parts) < 2 {
+	if (len(parts) < 2) {
 		return ""
 	}
 
-	// If it doesn't have a leading slash and value and file or trailing slash, then return ""
 	if parts[0] == "" && len(parts) < 3 {
 		return ""
 	}
 
-	// strip leading slash
 	if parts[0] == "" {
 		parts = parts[1:]
 	}
 
-	// if first directory is "content", return second directory
 	if parts[0] == "content" {
 		if len(parts) > 2 {
 			return parts[1]
@@ -363,6 +353,32 @@ func GuessSection(in string) string {
 	}
 
 	return parts[0]
+}
+
+// GuessSection returns the section given a source path.
+// A section is the part between the root slash and the second slash
+// or before the first slash.
+func GuessSection(in string) string {
+	cleaned := strings.Trim(in, FilePathSeparator)
+	parts := strings.Split(cleaned, FilePathSeparator)
+	// This will include an empty entry before and after paths with leading and trailing slashes
+	// eg... /sect/one/ -> ["", "sect", "one", ""]
+
+	// Needs to have at least a value and a slash
+	if len(parts) < 1 {
+		return ""
+	}
+
+	// if first directory is "content", return second directory
+	if parts[0] == "content" {
+		if len(parts) > 2 {
+			parts = parts[1:]
+		} else {
+			return ""
+		}
+	}
+
+	return strings.Join(parts, "/")
 }
 
 // PathPrep prepares the path using the uglify setting to create paths on
